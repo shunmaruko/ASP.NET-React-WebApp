@@ -10,9 +10,9 @@ namespace Backend.Controllers
     [ApiConventionType(typeof(DefaultApiConventions))]
     public class UserController : ControllerBase
     {
-        private readonly UserRepository _repository;
+        private readonly IRepository<UserDTO> _repository;
 
-        public UserController(UserRepository repository)
+        public UserController(IRepository<UserDTO> repository)
         {
             _repository = repository;
         }
@@ -26,7 +26,7 @@ namespace Backend.Controllers
             {
                 return NotFound();
             }
-            return users;
+            return Ok(users);
         }
 
         // GET: api/User/5

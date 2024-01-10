@@ -10,9 +10,9 @@ namespace Backend.Controllers
     [ApiConventionType(typeof(DefaultApiConventions))]
     public class TodoItemController : ControllerBase
     {
-        private readonly TodoItemRepository _repository;
+        private readonly IRepository<TodoItemDTO> _repository;
 
-        public TodoItemController(TodoItemRepository repository)
+        public TodoItemController(IRepository<TodoItemDTO> repository)
         {
             _repository = repository;
         }
