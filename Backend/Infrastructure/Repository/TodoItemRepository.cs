@@ -60,7 +60,7 @@ namespace Backend.Infrastructure.Repository
             };
         private static TodoItem DTOToModel(TodoItemDTO itemDTO) =>
             new TodoItem
-            {
+            {   
                 Id = itemDTO.Id,
                 Name = itemDTO.Name,
                 IsComplete = itemDTO.IsComplete,
