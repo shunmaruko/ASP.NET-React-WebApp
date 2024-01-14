@@ -1264,6 +1264,10 @@
         "additionalProperties": { }
       },
       "Student": {
+        "required": [
+          "firstMidName",
+          "lastName"
+        ],
         "type": "object",
         "properties": {
           "id": {
@@ -1271,16 +1275,18 @@
             "format": "int32"
           },
           "lastName": {
-            "type": "string",
-            "nullable": true
+            "maxLength": 50,
+            "minLength": 1,
+            "type": "string"
           },
           "firstMidName": {
-            "type": "string",
-            "nullable": true
+            "maxLength": 50,
+            "minLength": 1,
+            "type": "string"
           },
           "enrollmentDate": {
             "type": "string",
-            "format": "date-time"
+            "format": "date"
           },
           "enrollments": {
             "type": "array",
