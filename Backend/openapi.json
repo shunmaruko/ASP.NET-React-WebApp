@@ -1288,6 +1288,10 @@
               "$ref": "#/components/schemas/Enrollment"
             },
             "nullable": true
+          },
+          "secret": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
