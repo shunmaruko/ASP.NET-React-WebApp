@@ -8,6 +8,6 @@ namespace Backend.Models
         public required string FirstMidName { get; set; }
         public DateTime EnrollmentDate { get; set; }
 
-        public ICollection<Enrollment> Enrollments { get; set; } = null!;
+        public ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
     }
 }

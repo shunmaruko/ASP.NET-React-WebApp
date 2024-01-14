@@ -7,11 +7,11 @@ using Backend.Infrastructure.SeedData;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
-
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddScoped<IRepository<UserDTO>, UserRepository>();
 builder.Services.AddScoped<IRepository<TodoItemDTO>, TodoItemRepository>();
+builder.Services.AddScoped<IRepository<Student>, StudentRepository>();
 builder.Services.AddDbContext<TodoItemContext>(opt => opt.UseInMemoryDatabase(nameof(TodoItem)));
 builder.Services.AddDbContext<UserContext>(opt => opt.UseInMemoryDatabase(nameof(User)));
 builder.Services.AddDbContext<SchoolContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultSqlConnection")));

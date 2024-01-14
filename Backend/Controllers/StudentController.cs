@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Backend.Infrastructure.Context;
+using Backend.Infrastructure.Repository;
 using Backend.Models;
 
 namespace Backend.Controllers
@@ -10,65 +10,59 @@ namespace Backend.Controllers
     [ApiConventionType(typeof(DefaultApiConventions))]
     public class StudentController : ControllerBase
     {
-        private readonly SchoolContext _context;
+        private readonly IRepository<Student> _repository;
+        private readonly ILogger<StudentController> _logger;
 
-        public StudentController(SchoolContext context)
+        public StudentController(IRepository<Student> repository, ILogger<StudentController> logger)
         {
-            _context = context;
+
+            _repository = repository;
+            _logger = logger;
+            _logger.LogWarning("logger passed ");
         }
 
         // GET: api/Student
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Student>>> GetStudents()
         {
-          if (_context.Students == null)
+            _logger.LogWarning("start get request");
+            var students = await _repository.ListAsync();
+            if (students == null)
           {
               return NotFound();
           }
-            return await _context.Students.ToListAsync();
+            return Ok(students);
         }
 
         // GET: api/Student/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Student>> GetStudent(int id)
         {
-          if (_context.Students == null)
-          {
-              return NotFound();
-          }
-            var student = await _context.Students
-                .Include(s => s.Enrollments)
-                    .ThenInclude(e => e.Course)
-                .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.ID == id); ;
-
+            var student = await _repository.GetByIdAsync(id);
             if (student == null)
             {
                 return NotFound();
             }
-
-            return student;
+            return Ok(student);
         }
 
         // PUT: api/Student/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> PutStudent(int id, Student student)
         {
             if (id != student.ID)
             {
                 return BadRequest();
             }
-
-            _context.Entry(student).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                await _repository.UpdateAsync(student);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!StudentExists(id))
+                if (!_repository.Exist(id))
                 {
                     return NotFound();
                 }
@@ -84,15 +78,24 @@ namespace Backend.Controllers
         // POST: api/Student
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Student>> PostStudent(Student student)
+        public async Task<ActionResult<Student>> PostStudent([Bind("EnrollementDate,FirstName,LastName")] Student student) //
         {
-          if (_context.Students == null)
-          {
-              return Problem("Entity set 'SchoolContext.Students'  is null.");
-          }
-            _context.Students.Add(student);
-            await _context.SaveChangesAsync();
-
+            _logger.LogWarning("start post request");
+            try
+            {
+                if (ModelState.IsValid) // if inputted student is valid
+                {
+                    await _repository.AddAsync(student);
+                }
+            } catch (DbUpdateException /* ex */)
+            {
+            //Log the error (uncomment ex variable name and write a log.
+                ModelState.AddModelError("", "Unable to save changes. " +
+                    "Try again, and if the problem persists " +
+                    "see your system administrator.");
+                return BadRequest("Failure to update.");
+            }
+            //return NoContent();
             return CreatedAtAction(nameof(GetStudent), new { id = student.ID }, student);
         }
 
@@ -100,25 +103,13 @@ namespace Backend.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteStudent(int id)
         {
-            if (_context.Students == null)
-            {
-                return NotFound();
-            }
-            var student = await _context.Students.FindAsync(id);
+            var student = await _repository.GetByIdAsync(id);
             if (student == null)
             {
                 return NotFound();
             }
-
-            _context.Students.Remove(student);
-            await _context.SaveChangesAsync();
-
+            await _repository.DeleteAsync(student);
             return NoContent();
-        }
-
-        private bool StudentExists(int id)
-        {
-            return (_context.Students?.Any(e => e.ID == id)).GetValueOrDefault();
         }
     }
 }
