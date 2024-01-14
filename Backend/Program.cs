@@ -4,6 +4,7 @@ using Microsoft.OpenApi.Models;
 using Backend.Infrastructure.Context;
 using Backend.Infrastructure.Repository;
 using Backend.Infrastructure.SeedData;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,12 @@ builder.Services.AddDbContext<UserContext>(opt => opt.UseInMemoryDatabase(nameof
 builder.Services.AddDbContext<SchoolContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultSqlConnection")));
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+// To ignore System.Text.Json.JsonException, see https://learn.microsoft.com/ja-jp/ef/core/querying/related-data/serialization
+builder.Services.AddMvc()
+    .AddJsonOptions(
+        options => options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles
+    );
+
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo

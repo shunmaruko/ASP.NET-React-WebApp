@@ -9,6 +9,6 @@ namespace Backend.Models
         public string Title { get; set; } = string.Empty;
         public int Credits { get; set; }
 
-        public ICollection<Enrollment>? Enrollments { get; set; }
+        public ICollection<Enrollment> Enrollments { get; set; } = null!;
     }
 }
