@@ -1,34 +1,33 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-
+import { useState } from 'react';
+import './App.css';
+import LoginForm from './components/api-auth/LoginForm';
+import LoginView from './components/api-auth/LoginView';
+import Layout from './components/Layout';
+//import { Route, Routes } from 'react-router-dom';
+//import AppRoutes from './AppRoutes';
+//<Routes>
+//    {AppRoutes.map((route, index) => {
+//        const { element, ...rest } = route;
+//        return <Route key={index} {...rest} element={element} />;
+//    })}
+//</Routes>
 function App() {
   const [count, setCount] = useState(0)
-
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    return (
+        <Layout>
+          <>
+              <LoginForm />
+              <LoginView />
+              <div className="card">
+                  <button onClick={() => setCount((count) => count + 1)}>
+                      count is {count}
+                  </button>
+                  <p>
+                      Edit <code>src/App.tsx</code> and save to test HMR
+                  </p>
+              </div>
+            </>
+        </Layout>
   )
 }
 

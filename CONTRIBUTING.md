@@ -24,7 +24,15 @@ Since we use code first apporach, database can be migrated from Models on a Cont
   1. Execute migration.<br>
       `dotnet ef database update --context SomeContext`
   1. Finally you can check how it changed in SSOX.<br>
-
+#### DB rollback 
+When you want to cancel migration, you can do it by the following procedure.
+  1. Revert migration to previsous migration (XXX).<br>
+    `dotnet ef database update XXX --context SomeContext` <br>
+     Or, if you go back before first migration, you can run:<br>
+    `dotnet ef database update 0 --context SomeContext` <br>
+  1. Remove last migration files. <br>
+    `ef database migrations remove --context SomeContext`<br>
+For more inforamation, you can see [here](https://learn.microsoft.com/ja-jp/ef/core/managing-schemas/migrations/applying?tabs=dotnet-core-cli).
 ## 3. Frontend.
 TODO: add description
   

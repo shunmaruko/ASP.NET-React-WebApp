@@ -8,13 +8,22 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
+// Add Repository for DI to Controller
 builder.Services.AddControllers();
 builder.Services.AddScoped<IRepository<UserDTO>, UserRepository>();
 builder.Services.AddScoped<IRepository<TodoItemDTO>, TodoItemRepository>();
 builder.Services.AddScoped<IRepository<Student>, StudentRepository>();
+// DI for DbContext
 builder.Services.AddDbContext<TodoItemContext>(opt => opt.UseInMemoryDatabase(nameof(TodoItem)));
 builder.Services.AddDbContext<UserContext>(opt => opt.UseInMemoryDatabase(nameof(User)));
 builder.Services.AddDbContext<SchoolContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultSqlConnection")));
+// Authentification
+//builder.Services.AddDefaultIdentity<AuthUser>(options => options.SignIn.RequireConfirmedAccount = true)
+//    .AddEntityFrameworkStores<AuthContext>();
+//builder.Services.AddIdentityServer().AddApiAuthorization<AuthUser, AuthContext>();   
+//builder.Services.AddAuthentication()
+//    .AddIdentityServerJwt();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 // To ignore System.Text.Json.JsonException, see https://learn.microsoft.com/ja-jp/ef/core/querying/related-data/serialization
@@ -55,6 +64,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+//app.UseAuthentication();
+//app.UseIdentityServer();
 
 app.UseAuthorization();
 
