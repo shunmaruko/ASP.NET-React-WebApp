@@ -5,7 +5,6 @@ import {
     Button,
     Link,
     Box,
-    FormHelperText,
     FormControl,
     FormLabel,
     useColorModeValue,
@@ -41,7 +40,6 @@ const LoginForm = () => {
                     mb={6}
                     aria-describedby="password-helper-text"
                 />
-                <FormHelperText id="password-helper-text">Forgot password?</FormHelperText>
                 </FormControl>
                 <Button colorScheme="teal" mb={8}>
                     Log In

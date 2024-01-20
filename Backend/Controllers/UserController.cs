@@ -2,9 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using Backend.Models;
 using Backend.Infrastructure.Repository;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Backend.Controllers
 {
+    [AllowAnonymous]
     [Route("api/[controller]")]
     [ApiController]
     [ApiConventionType(typeof(DefaultApiConventions))]

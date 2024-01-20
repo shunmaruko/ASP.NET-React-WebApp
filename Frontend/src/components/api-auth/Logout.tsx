@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { LogoutActions, LogoutAction } from './ApiAuthorizationConstants'
 
 export const Logout = (logoutAction: LogoutAction) => {
-    //const [,] = useState<LoginAction>(LoginActions.LoginFailed);
+    //const [,] = useState<LoginAction | null >(null);
     useEffect(() => {
         switch (logoutAction) {
             case LogoutActions.Logout:

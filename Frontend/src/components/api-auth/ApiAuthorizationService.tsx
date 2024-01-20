@@ -1,13 +1,11 @@
-import { UserManager, WebStorageStateStore } from 'oidc-client-ts';
+import { UserManager, UserManagerSettings } from 'oidc-client-ts';
 import { ApplicationName } from './ApiAuthorizationConstants'
-const userStore = new WebStorageStateStore({ prefix: ApplicationName });
-const settings = {
-    userStore: userStore
-}
-const mgr = new UserManager(settings);
-type User = {
-    userName: string;
-}
+
+const setting = {
+    authority: "",
+    client_id: "",
+    redirect_uri: "",
+} as UserManagerSettings;
 
 export const AuthenticationResultStatuses = {
     Redirect: 'redirect',

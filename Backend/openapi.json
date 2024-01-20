@@ -15,6 +15,28 @@
     "version": "v1"
   },
   "paths": {
+    "/_configuration/{clientId}": {
+      "get": {
+        "tags": [
+          "OidcConfiguration"
+        ],
+        "parameters": [
+          {
+            "name": "clientId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
     "/api/Student": {
       "get": {
         "tags": [
