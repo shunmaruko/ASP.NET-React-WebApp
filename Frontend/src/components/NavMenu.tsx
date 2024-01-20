@@ -6,6 +6,7 @@
     IconButton,
 } from '@chakra-ui/react'
 import { HamburgerIcon, AddIcon, ExternalLinkIcon, RepeatIcon, EditIcon } from '@chakra-ui/icons';
+
 const NavMenu = () => {
     return (
         <Menu>
