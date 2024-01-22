@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import './App.css';
-import LoginForm from './components/api-auth/LoginForm';
 import LoginView from './components/api-auth/LoginView';
 import Layout from './components/Layout';
 //import { Route, Routes } from 'react-router-dom';
@@ -16,7 +15,6 @@ function App() {
     return (
         <Layout>
           <>
-              <LoginForm />
               <LoginView />
               <div className="card">
                   <button onClick={() => setCount((count) => count + 1)}>

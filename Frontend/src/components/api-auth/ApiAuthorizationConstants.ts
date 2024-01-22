@@ -1,4 +1,6 @@
-const baseUrl = '/authentication';
+const IdentityServerUrl = 'https://localhost:7226';
+const clientUrl = `http://localhost:5173`;
+const baseUrl = `${clientUrl}/authentication`;
 
 export const ApplicationName = 'ASP.NET-React-Web';
 
@@ -24,8 +26,10 @@ export const LoginActions = {
 export type LoginAction = (typeof LoginActions)[keyof typeof LoginActions];
 
 export const ApiAutorizationPaths = {
+    ServerUrl: IdentityServerUrl,
+    ClientAuthBaseUrl: baseUrl,
     DefaultLoginRedirectPath: '/',
-    ApiAuthorizationClientConfigurationUrl: `_configuration/${ApplicationName}`,
+    ApiAuthorizationClientConfigurationUrl: `${IdentityServerUrl}$/_configuration/${ApplicationName}`,
     Login: `${baseUrl}/${LoginActions.Login}`,
     LoginFailed: `${baseUrl}/${LoginActions.LoginFailed}`,
     LoginCallback: `${baseUrl}/${LoginActions.LoginCallback}`,

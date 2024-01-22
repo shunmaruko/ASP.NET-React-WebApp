@@ -9,18 +9,12 @@ import {
 } from '@chakra-ui/react';
 import { SunIcon, MoonIcon } from '@chakra-ui/icons';
 import { FaGithub } from "react-icons/fa";
-import NavMenu from './NavMenu'
-
-const GitHubIcon = () => {
-    return (
-        <Icon as={FaGithub}/>
-    );
-}
+import NavMenu from './NavMenu';
 
 const GitHubIconButton = () => {
     return (
         <Link href="https://github.com/shunmaruko/ASP.NET-React-WebApp" isExternal>
-            <IconButton aria-label="view source code on github" icon={<GitHubIcon />} >
+            <IconButton aria-label="view source code on github" icon={<Icon as={FaGithub} />} >
             </IconButton>
         </Link>
     )

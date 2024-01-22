@@ -1,8 +1,17 @@
-//import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { getUserInfo } from './ApiAuthorizationService'
+import LoginOrSignInForm from './/LoginForm';
 
 const LoginView = () => {
-    //const [isAutheticated, setIsAutheticated] = useState(false);
-    const isAutheticated = false;
+    const [isAutheticated, setIsAutheticated] = useState<boolean>(false);
+    useEffect(() => {
+        async () => {
+            const userInfo = await getUserInfo();
+            if (userInfo?.isAuthorized) {
+                setIsAutheticated(userInfo.isAuthorized);
+            }
+        }
+    }, [])
     return (
             isAutheticated ? authenticatedView() : annonymousView()
     )
@@ -11,7 +20,7 @@ const LoginView = () => {
 const authenticatedView = () => {
     return (
         <>
-            "Login view"
+            "Logged in  view"
         </>
   )
 }
@@ -19,7 +28,7 @@ const authenticatedView = () => {
 const annonymousView = () => {
     return (
         <>
-            "Annonymous view"
+            <LoginOrSignInForm />
         </>
     )
 }

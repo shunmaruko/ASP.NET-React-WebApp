@@ -95,6 +95,7 @@ if (app.Environment.IsDevelopment())
 // Https redirectoin is added just in case HSTS is not supported in client browser
 app.UseHttpsRedirection();
 
+// Publish OIDC end point
 // Add AuthenticationMiddleware to request pipeline 
 // which must be called before UseAuthorization
 app.UseIdentityServer();
