@@ -8,6 +8,7 @@ using Backend.Infrastructure.SeedData;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using NuGet.Protocol.Plugins;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container. Authorize all controller by default.
@@ -26,11 +27,21 @@ builder.Services.AddDbContext<SchoolContext>(opt => opt.UseSqlServer(builder.Con
 builder.Services.AddDbContext<ApplicationContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultSqlConnection")));
 
 // Authentication + Authorization
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(
+        policy =>
+        {
+            policy.AllowAnyOrigin().AllowAnyHeader(); //TODO: limit alllowd origin to Client applications
+            //For AllowAnyHeader, see https://learn.microsoft.com/ja-jp/aspnet/core/security/cors?view=aspnetcore-7.0
+        });
+});
 // Add Authentication + default UI TODO is it really necessary?
 builder.Services.AddDefaultIdentity<ApplicationUser>(
         options => options.SignIn.RequireConfirmedAccount = true // if true 
     )
     .AddEntityFrameworkStores<ApplicationContext>(); // determine where user informations are stored.
+
 // Add default cokkie authentication + add api authorization
 builder.Services.AddIdentityServer().AddApiAuthorization<ApplicationUser, ApplicationContext>();   
 // Add jwt validation to authentication
@@ -74,7 +85,7 @@ builder.Services.AddHsts(options =>
 
 var app = builder.Build();
 
-Utils.CreateSchoolRelatedDbIfNotExists(app);
+MainUtils.CreateSchoolRelatedDbIfNotExists(app);
 
 // Configure the HTTP request pipeline.
 // For the order of middleware you can see
@@ -96,6 +107,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 // Publish OIDC end point
+// Activate CORS policy (i.e. allow to get autentication from specific origin
+app.UseCors();
 // Add AuthenticationMiddleware to request pipeline 
 // which must be called before UseAuthorization
 app.UseIdentityServer();
@@ -105,11 +118,11 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
-public class Utils
+public class MainUtils
 {
     public static void CreateSchoolRelatedDbIfNotExists(IHost app)
-    { 
-        using (var scope = app.Services.CreateScope())
+    {
+        using var scope = app.Services.CreateScope();
         {
             var services = scope.ServiceProvider;
             var logger = services.GetRequiredService<ILogger<Program>>();

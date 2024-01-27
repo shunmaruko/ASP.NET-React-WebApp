@@ -29,7 +29,7 @@ export const ApiAutorizationPaths = {
     ServerUrl: IdentityServerUrl,
     ClientAuthBaseUrl: baseUrl,
     DefaultLoginRedirectPath: '/',
-    ApiAuthorizationClientConfigurationUrl: `${IdentityServerUrl}$/_configuration/${ApplicationName}`,
+    ApiAuthorizationClientConfigurationUrl: `${IdentityServerUrl}/_configuration/${ApplicationName}`,
     Login: `${baseUrl}/${LoginActions.Login}`,
     LoginFailed: `${baseUrl}/${LoginActions.LoginFailed}`,
     LoginCallback: `${baseUrl}/${LoginActions.LoginCallback}`,

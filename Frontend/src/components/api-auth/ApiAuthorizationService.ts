@@ -1,12 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { UserManager, UserManagerSettings, User } from 'oidc-client-ts';
+import { UserManager, UserManagerSettings, User, Log } from 'oidc-client-ts';
 import { ApplicationName, ApiAutorizationPaths } from './ApiAuthorizationConstants'
+Log.setLogger(console);
+Log.setLevel(Log.DEBUG);
 
 const setting = {
     authority: ApiAutorizationPaths.ServerUrl,
     client_id: ApplicationName,
     redirect_uri: ApiAutorizationPaths.LoginCallback,
     post_logout_redirect_uri: ApiAutorizationPaths.LogOutCallback,
+    automaticSilentRenew: true,
+    silentRequestTimeout: 30,
     scope: "BackendAPI openid profile"
 } as UserManagerSettings;
 
@@ -46,15 +50,29 @@ const updateUserInfo = (user: User | null | void) => {
     userInfo = newUserinfo;
 };
 
-const signIn = async (): Promise<AuthenticationResultStatus> => {
-        try {
+const signIn =  async () => {
+    console.log("try signin silent");
+    try {
+            const response = await fetch(ApiAutorizationPaths.ApiAuthorizationClientConfigurationUrl, {
+                headers: {
+                    mode: 'cors',
+                }
+            });
+            if (!response.ok) {
+                throw new Error(`Could not load settings for '${ApplicationName}'`);
+            }
+            console.log(response.json());
             const user = await userManager.signinSilent();
+            console.log(user);
             updateUserInfo(user);
+            console.log("try signin suceed");
             return success();
         } catch (err: any) {
             console.log(err.message);
+            console.log("try signIn redirect");
             try {
-                await userManager.signinRedirect();
+                //await userManager.signinRedirect();
+                console.log("succeed redirect");
                 return redirect();
             } catch (err: any) {
                 console.log(err.message);
@@ -100,9 +118,16 @@ const signOutCallback = async(): Promise<AuthenticationResultStatus> => {
         }
 }
 const getUserInfo = async (): Promise<UserInfo | null> => {
-        const user = await userManager.getUser();
-        updateUserInfo(user);
-        return userInfo;
+    userManager.getUser()
+        .then((user: User | null) => {
+            console.log("succeed to get user");
+            updateUserInfo(user);
+        })
+        .catch((err) => {
+            console.error(err);
+        }).finally(() => {
+            return userInfo;
+        });
 }; 
 
 export { signIn, signInCallback, signOut, signOutCallback, getUserInfo, AuthenticationResultStatuses};

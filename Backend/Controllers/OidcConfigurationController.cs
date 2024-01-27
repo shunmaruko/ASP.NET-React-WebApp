@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Backend.Controllers
 { 
-    [AllowAnonymous]
+[AllowAnonymous]
 public class OidcConfigurationController : Controller
     {
         private readonly ILogger<OidcConfigurationController> _logger;
@@ -23,6 +23,7 @@ public class OidcConfigurationController : Controller
         [HttpGet("_configuration/{clientId}")]
         public IActionResult GetClientRequestParameters([FromRoute] string clientId)
         {
+            _logger.LogInformation("testoo");
             var parameters = ClientRequestParametersProvider.GetClientParameters(HttpContext, clientId);
             return Ok(parameters);
         }

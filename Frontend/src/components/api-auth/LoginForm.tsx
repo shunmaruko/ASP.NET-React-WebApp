@@ -10,7 +10,8 @@ import {
     FormLabel,
     useColorModeValue,
 } from '@chakra-ui/react';
-import { ColorModes, ColorSchemes} from '../ColorTheme';
+import { ColorModes, ColorSchemes } from '../ColorTheme';
+import { signIn } from './ApiAuthorizationService';
 
 const loginStates = {
     login: "login",
@@ -80,7 +81,11 @@ const LoginForm = (props: FormProps) => {
 const SignUpForm = (props: FormProps) => {
     const { setLoginState } = props; 
     const formBackgroundColor = useColorModeValue(ColorModes.paleTheme.light, ColorModes.paleTheme.dark);
-    const title =  "Sign Up";
+    const title = "Sign Up";
+    const [email, setEmail] = useState<string>('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState<string>('');
+    const isValidPassword = !!password && password == confirmPassword;
     return (
         <Flex h="100vh" alignItems="center" justifyContent="center">
             <Flex
@@ -98,6 +103,7 @@ const SignUpForm = (props: FormProps) => {
                         type="email"
                         variant="filled"
                         mb={3}
+                        onChange={(e) => setEmail(e.target.value)}
                     />
                 </FormControl>
                 <FormControl isRequired>
@@ -108,6 +114,7 @@ const SignUpForm = (props: FormProps) => {
                         variant="filled"
                         mb={6}
                         aria-describedby="password-helper-text"
+                        onChange={(e) => setPassword(e.target.value)}
                     />
                 </FormControl>
                 <FormControl isRequired>
@@ -118,9 +125,18 @@ const SignUpForm = (props: FormProps) => {
                         variant="filled"
                         mb={6}
                         aria-describedby="password-helper-text"
+                        onChange={(e) => setConfirmPassword(e.target.value)}
                     />
                 </FormControl>
-                <Button colorScheme={ColorSchemes.Teal} mb={8}>
+                <Button
+                    colorScheme={ColorSchemes.Teal}
+                    mb={8} isDisabled={!isValidPassword}
+                    onClick={() => {
+                        console.log("sign in");
+                        const status = signIn();
+                        console.log(status);
+                    }}
+                >
                     {title}
                 </Button>
                 <Box>
