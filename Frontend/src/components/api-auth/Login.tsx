@@ -1,9 +1,7 @@
-import { useEffect } from 'react';
 import { LoginActions, LoginAction } from './ApiAuthorizationConstants'
-
+import { signInCallback } from './ApiAuthorizationService';
 export const Login = (loginAction: LoginAction) => {
-    //const [,] = useState<LoginAction>(LoginActions.LoginFailed);
-    useEffect(() => {
+    console.log(loginAction);
         switch (loginAction) {
             case LoginActions.Login:
                 onLogin(); break;
@@ -14,9 +12,8 @@ export const Login = (loginAction: LoginAction) => {
             case LoginActions.LoginFailed:
                 onLoginFailed(); break;
             default:
-                throw new Error(`Invalid action '${loginAction}'`);
+               throw new Error(`Invalid action '${loginAction}'`);
         }
-    }, [loginAction])
     return(
         <>{loginAction}</>
     )
@@ -28,7 +25,8 @@ const onLoginFailed = () => {
     console.log("login action failed")
 }
 const onLoginCallback = () => {
-    console.log("login callback")
+    console.log("login callback");
+    return signInCallback();
 }
 const redirectToSignIn = () => {
     console.log("redirect to sing in")

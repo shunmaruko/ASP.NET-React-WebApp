@@ -1,6 +1,6 @@
 const IdentityServerUrl = 'https://localhost:7226';
 const clientUrl = `http://localhost:5173`;
-const baseUrl = `${clientUrl}/authentication`;
+const prefix = `/authentication`;
 
 export const ApplicationName = 'ASP.NET-React-Web';
 
@@ -27,15 +27,15 @@ export type LoginAction = (typeof LoginActions)[keyof typeof LoginActions];
 
 export const ApiAutorizationPaths = {
     ServerUrl: IdentityServerUrl,
-    ClientAuthBaseUrl: baseUrl,
+    ClientAuthBaseUrl: clientUrl,
     DefaultLoginRedirectPath: '/',
     ApiAuthorizationClientConfigurationUrl: `${IdentityServerUrl}/_configuration/${ApplicationName}`,
-    Login: `${baseUrl}/${LoginActions.Login}`,
-    LoginFailed: `${baseUrl}/${LoginActions.LoginFailed}`,
-    LoginCallback: `${baseUrl}/${LoginActions.LoginCallback}`,
-    SignIn: `${baseUrl}/${LoginActions.SignIn}`,
-    LogOut: `${baseUrl}/${LogoutActions.Logout}`,
-    LoggedOut: `${baseUrl}/${LogoutActions.LoggedOut}`,
-    LogOutCallback: `${baseUrl}/${LogoutActions.LogoutCallback}`,
+    Login: `${prefix}/${LoginActions.Login}`,
+    LoginFailed: `${prefix}/${LoginActions.LoginFailed}`,
+    LoginCallback: `${prefix}/${LoginActions.LoginCallback}`,
+    SignIn: `${prefix}/${LoginActions.SignIn}`,
+    LogOut: `${prefix}/${LogoutActions.Logout}`,
+    LoggedOut: `${prefix}/${LogoutActions.LoggedOut}`,
+    LogOutCallback: `${prefix}/${LogoutActions.LogoutCallback}`,
 }
 export type ApiAutorizationPath = (typeof ApiAutorizationPaths)[keyof typeof ApiAutorizationPaths];

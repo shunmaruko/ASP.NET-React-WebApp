@@ -1,17 +1,30 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { UserManager, UserManagerSettings, User, Log } from 'oidc-client-ts';
+import { UserManager, UserManagerSettings, User, Log, WebStorageStateStore } from 'oidc-client-ts';
 import { ApplicationName, ApiAutorizationPaths } from './ApiAuthorizationConstants'
 Log.setLogger(console);
 Log.setLevel(Log.DEBUG);
-
+//
+const test = new WebStorageStateStore({
+    prefix: ApplicationName
+});
+const result = await test.getAllKeys();
+console.log(result);
 const setting = {
     authority: ApiAutorizationPaths.ServerUrl,
     client_id: ApplicationName,
-    redirect_uri: ApiAutorizationPaths.LoginCallback,
+    redirect_uri: `${ApiAutorizationPaths.ClientAuthBaseUrl}${ApiAutorizationPaths.LoginCallback}`,
     post_logout_redirect_uri: ApiAutorizationPaths.LogOutCallback,
     automaticSilentRenew: true,
     silentRequestTimeout: 30,
-    scope: "BackendAPI openid profile"
+    scope: "BackendAPI openid profile",
+    response_type: "code",
+} as UserManagerSettings;
+
+
+//See https://learn.microsoft.com/ja-jp/aspnet/core/security/authentication/identity-api-authorization?view=aspnetcore-7.0
+const signInCallBackSetting = {
+    response_mode: "fragment",
+    ...setting
 } as UserManagerSettings;
 
 const userManager = new UserManager(setting);
@@ -62,7 +75,12 @@ const signIn =  async () => {
                 throw new Error(`Could not load settings for '${ApplicationName}'`);
             }
             console.log(response.json());
-            const user = await userManager.signinSilent();
+            console.log(`${ApiAutorizationPaths.ClientAuthBaseUrl}${ApiAutorizationPaths.LoginCallback}`);
+            const user = await userManager.signinRedirect({
+                state: {
+                    returnUrl: `${ApiAutorizationPaths.ClientAuthBaseUrl}${ApiAutorizationPaths.LoginCallback}`,
+                }
+            });
             console.log(user);
             updateUserInfo(user);
             console.log("try signin suceed");
@@ -71,7 +89,7 @@ const signIn =  async () => {
             console.log(err.message);
             console.log("try signIn redirect");
             try {
-                //await userManager.signinRedirect();
+                await userManager.signinRedirect();
                 console.log("succeed redirect");
                 return redirect();
             } catch (err: any) {
@@ -81,8 +99,9 @@ const signIn =  async () => {
         }        
 };
 const signInCallback = async (): Promise<AuthenticationResultStatus> => {
-        try {
-            const user = await userManager.signinCallback(ApiAutorizationPaths.LoginCallback);
+    try {
+            const userManager = new UserManager(signInCallBackSetting);
+            const user = await userManager.signinCallback();
             updateUserInfo(user);
             return success();
         } catch (err: any) {

@@ -8,7 +8,8 @@ using Backend.Infrastructure.SeedData;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
-using NuGet.Protocol.Plugins;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container. Authorize all controller by default.
@@ -37,14 +38,30 @@ builder.Services.AddCors(options =>
         });
 });
 // Add Authentication + default UI TODO is it really necessary?
-builder.Services.AddDefaultIdentity<ApplicationUser>(
-        options => options.SignIn.RequireConfirmedAccount = true // if true 
-    )
-    .AddEntityFrameworkStores<ApplicationContext>(); // determine where user informations are stored.
+//builder.Services.AddDefaultIdentity<ApplicationUser>(
+//        options => options.SignIn.RequireConfirmedAccount = true // if true 
+//  )
+//    .AddEntityFrameworkStores<ApplicationContext>(); // determine where user informations are stored.
 
+builder.Services.AddAuthentication(o =>
+{
+    o.DefaultScheme = IdentityConstants.ApplicationScheme;
+    o.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+})
+.AddIdentityCookies();
+
+builder.Services.AddIdentityCore<ApplicationUser>(o =>
+{
+    o.Stores.MaxLengthForKeys = 128;
+    o.SignIn.RequireConfirmedAccount = true;
+})
+.AddDefaultTokenProviders()
+.AddEntityFrameworkStores<ApplicationContext>()
+.AddSignInManager<SignInManager<ApplicationUser>>();
 // Add default cokkie authentication + add api authorization
-builder.Services.AddIdentityServer().AddApiAuthorization<ApplicationUser, ApplicationContext>();   
+builder.Services.AddIdentityServer().AddApiAuthorization<ApplicationUser, ApplicationContext>();
 // Add jwt validation to authentication
+//https://github.com/IdentityModel/oidc-client-js/issues/911
 builder.Services.AddAuthentication().AddIdentityServerJwt();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -112,6 +129,7 @@ app.UseCors();
 // Add AuthenticationMiddleware to request pipeline 
 // which must be called before UseAuthorization
 app.UseIdentityServer();
+
 // Add AuthorizationMiddleware to request pipeline
 app.UseAuthorization();
 
